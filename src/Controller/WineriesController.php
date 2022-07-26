@@ -13,7 +13,10 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\BrowserKit\Request;
 
 class WineriesController extends AbstractController
+
 {
+    // Esta devuelve todas mis bodegas. Carga en la ruta: http://localhost/bouquet_server/public/index.php/api/wineries
+
     /**
      * @Route("/api/wineries", name="wineries", methods={"GET"})
      */
