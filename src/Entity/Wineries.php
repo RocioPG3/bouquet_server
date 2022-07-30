@@ -72,6 +72,7 @@ class Wineries
     {
         return $this->id;
     }
+    
 
     public function getActive(): ?int
     {
@@ -192,4 +193,26 @@ class Wineries
 
         return $this;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'active' => $this->getActive(),
+            'denomination' => $this->getDenomination(),
+            'name' => $this->getName(),
+            'location' => $this->getLocation(),
+            'address' => $this->getAddress(),
+            'telephone' => $this->getTelephone(),
+            'description' => $this->getDescription(),
+           
+
+        ];
+    }
+
+
+
+
+
+
+
 }

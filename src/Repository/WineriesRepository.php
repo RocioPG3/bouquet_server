@@ -3,8 +3,12 @@
 namespace App\Repository;
 
 use App\Entity\Wineries;
+use App\Entity\Users;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Throwable;
 
 /**
  * @extends ServiceEntityRepository<Wineries>
@@ -16,29 +20,75 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class WineriesRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $em;
+
+    public function __construct(ManagerRegistry $registry, EntityManagerInterface $entityManager)
     {
+        $this->em = $entityManager;
         parent::__construct($registry, Wineries::class);
     }
 
-    public function add(Wineries $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->persist($entity);
 
-        if ($flush) {
+    public function createWinerie($data, Users $users)
+    {
+        try {
+            $wineries = new Wineries();
+
+            $wineries->setActive($data['active']);
+            $wineries->setDenomination($data['denomination']);
+            $wineries->setName($data['name']);
+            $wineries->setLocation($data['location']);
+            $wineries->setAddress($data['address']);
+            $wineries->setTelephone($data['telephone']);
+            $wineries->setDescription($data['description']);
+            $wineries->setUser($users);
+
+            $this->getEntityManager()->persist($wineries);
             $this->getEntityManager()->flush();
+            return true;
+        } catch (Throwable $exception) {
+            return false;
         }
     }
+    /* try catch si se produce una excepción en el bloque del try, entraría dentro del catch si se especifica la excepción (en este caso, si la consulta
+    falla porque recibe un tipo de datos que no corresponde para ese campo)  */
 
-    public function remove(Wineries $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->remove($entity);
 
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
-
+     //ésta sería la opción para devolver todas las rutas que pertenezcan a un usuario mostrando solo las que le pertenecen a ese usuario:
+     public function getWineriesWithSelectByUser(array $select, Users $users)
+     {
+ 
+        
+         //ésto de abajo sería como hacer ésta consulta en phpmyadmin:  select {selectParam} from ride r where r.user_id = {userid}
+         
+         return $this->createQueryBuilder('r')
+             ->select($select)
+             ->andWhere('r.user = :user')
+             ->setParameter('user', $user)
+             ->getQuery()
+             ->getResult();
+     }
+ 
+     //ésta función sería para devolver todas las bodegas pero filtradas por  lo que le indique en el select, por ejemplo getWineries(['r.name'])(ver ApiController el endpoint read/select por ejemplo que ahí lo uso)::
+     public function getWineries(array $select)
+     {
+       
+         //ésto de abajo sería como hacer ésta consulta en phpmyadmin:  select {selectParam} from ride r
+ 
+         return $this->createQueryBuilder('r')
+             ->select($select)
+             ->getQuery()
+             ->getResult();
+     }
+ 
+    
+ 
+ 
+ 
+     /**            
+  
+      */
+    
 //    /**
 //     * @return Wineries[] Returns an array of Wineries objects
 //     */
