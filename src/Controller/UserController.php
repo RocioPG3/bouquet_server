@@ -14,14 +14,19 @@ use Symfony\Component\Routing\Annotation\Route;
 
 
 /**
- * @Route("/api/users")
+ * @Route("/api/user")
  */
 
 
 class UserController extends AbstractController
 {
 
+    private $usersRepository;
 
+    public function __construct(UsersRepository $usersRepository)
+    {
+        $this->usersRepository = $usersRepository;
+    }
 
     /* Aqui creamos una funcion para CONSULTAR los usuarios existentes en mi bbdd, un metodo get en esta url http://localhost/bouquet_server/public/index.php/api/user */
 
@@ -75,7 +80,7 @@ class UserController extends AbstractController
     /* Aqui creamos una funcion para EDITAR un usuario ya existente en mi bbdd (le paso el id del usuario por parametros en la ruta y los recibe como parametros en la funcion), un metodo put en esta url http://localhost/bouquet_server/public/index.php/api/users/{id} */
 
     /**
-     * @Route("/api/users/{id}", methods={"PUT"})
+     * @Route("/api/user/{id}", methods={"PUT"})
      */
     public function modificar($id, UsersRepository $usersRepository, Request $request, EntityManagerInterface $em)
     {
@@ -120,5 +125,44 @@ class UserController extends AbstractController
         return new JsonResponse([
             'result' => 'ok'
         ]);
+   }
+
+
+    /**
+     * @Route("/read", name="read_users", methods={"GET"})
+     */
+
+    public function allUsersAction(): Response
+    {
+        return new JsonResponse(
+            [
+
+        'data' => $this->usersRepository->getUsers(['u.id, u.email, u.active, u.roles ,u.password']),  /*aqui los campos que quiero del $select ésto es lo realmente importante, lo que uso */
+            ]
+        );
+        
     }
+
+
+    /**
+     * @Route("/create", name="create-user", methods={"POST"})
+     */
+
+    public function createUserAction(Request $request)
+    {
+        $data = json_decode($request->getContent(), true);
+        $status = $this->usersRepository->createUser($data);   /* sera true o false según recibe del usersrepository (si se crea o no la entrada) */
+
+        return new JsonResponse([
+            'status' => $status,
+            'message' => $status ? "Todo ha ido ok" : "Has metido datos que no corresponden"     //Ésto es lo que envía al front como respuesta. 
+        ]);
+    }
+
+
+
+
+
+
+
 }

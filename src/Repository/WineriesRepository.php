@@ -29,7 +29,7 @@ class WineriesRepository extends ServiceEntityRepository
     }
 
 
-    public function createWinerie($data, Users $users)
+    public function createWinerie(array $data, Users $users)
     {
         try {
             $wineries = new Wineries();
@@ -81,6 +81,66 @@ class WineriesRepository extends ServiceEntityRepository
              ->getResult();
      }
  
+     //Esta función es para editar una bodega en concreto:
+     public function editWinerie(array $data, Wineries $wineries): bool
+    {
+        try {
+
+            if (isset($data['active'])) {
+                $wineries->setActive($data['active']);
+            }
+
+            if (isset($data['denomination'])) {
+                $wineries->setDenomination($data['denomination']);
+            }
+
+            if (isset($data['name'])) {
+                $wineries->setName($data['name']);
+            }
+
+            if (isset($data['location'])) {
+                $wineries->setLocation($data['location']);
+            }
+
+            if (isset($data['address'])) {
+                $wineries->setAddress($data['address']);
+            }
+
+            if (isset($data['telephone'])) {
+                $wineries->setTelephone($data['telephone']);
+            }
+
+
+            if (isset($data['services'])) {
+                $wineries->setDuration($data['services']);
+            }
+
+            if (isset($data['description'])) {
+                $wineries->setDescription($data['description']);
+            }
+
+
+            /* if (isset($data['image'])) {
+                $wineries->setImage($data['image']);
+            } */
+
+
+
+            $this->getEntityManager()->persist($wineries);
+            $this->getEntityManager()->flush();
+            return true;
+        } catch (Throwable $exception) {
+            return false;
+        }
+    }
+            /* REVISAR SI ESTÁ BIEN: */
+
+    public function deleteWinerie(Wineries $wineries)
+    {
+         $this->em->remove($wineries);
+         $this->em->flush();
+        }       
+    
     
  
  

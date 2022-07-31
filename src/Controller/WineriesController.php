@@ -25,6 +25,17 @@ use Symfony\Component\HttpFoundation\Request;
 class WineriesController extends AbstractController
 
 {
+
+
+    private $wineriesRepository;
+
+    public function __construct(WineriesRepository $wineriesRepository)
+    {
+        $this->wineriesRepository = $wineriesRepository;
+
+
+    }
+
     // Esta devuelve todas mis bodegas. Carga en la ruta: http://localhost/bouquet_server/public/index.php/api/wineries
 
     /**
@@ -64,11 +75,11 @@ class WineriesController extends AbstractController
     /**
      * @Route("/create/{id}", name="create-winerie", methods={"POST"})
      */
-    public function createAction(Request $request, WineriesRepository $wineriesRepository, Users $users)
+    public function createAction(Request $request, Users $users)
     {
        
         $data = json_decode($request->getContent(), true);
-        $status = $wineriesRepository->createWinerie($data, $users);   /* sera true o false según recibe del Wineriesrepository (si se crea o no la entrada) */
+        $status = $this-> wineriesRepository->createWinerie($data, $users);   /* sera true o false según recibe del Wineriesrepository (si se crea o no la entrada) */
 
         return new JsonResponse([
 
@@ -87,11 +98,11 @@ class WineriesController extends AbstractController
     /**
      * @Route("/read/select", name="select", methods={"GET"})
      */
-    public function select(WineriesRepository $wineriesRepository): Response
+    public function selectAction(): Response
     {
         
         return new JsonResponse(
-            ['data' => $wineriesRepository->getWineries(['r.name', 'r.id'])]
+            ['data' => $this-> wineriesRepository->getWineries(['r.name', 'r.id'])]
         );
     }
 
@@ -104,13 +115,13 @@ class WineriesController extends AbstractController
     /**
      * @Route("/read", name="read_wineries", methods={"GET"})
      */
-    public function allWineriesAction(WineriesRepository $wineriesRepository): Response
+    public function allWineriesAction(): Response
     {
         return new JsonResponse(
             [
     
 
-                'data' => $wineriesRepository->getWineries(['r.id, r.name ,r.denomination', 'r.location'])  /* y aqui los campos que quiero del $select ésto es lo realmente importante, lo que uso */
+                'data' => $this-> wineriesRepository->getWineries(['r.id, r.name ,r.denomination', 'r.location'])  /* estos son los campos que quiero del $select ésto es lo realmente importante, lo que uso */
 
             ]
         );
@@ -124,59 +135,39 @@ class WineriesController extends AbstractController
     /**
      * @Route("/read/user/{id}", name="wineries_show_by_user", methods={"GET"})
      */
-    public function wineriesByUserAction(WineriesRepository $wineriesRepository, Users $users): Response
+    public function wineriesByUserAction( Users $users): Response
     {
         return new JsonResponse(
             [
-                'data' => $wineriesRepository->getWineriesWithSelect(['r.id, r.name ,r.denomination', 'r.location', 'r.description']),
-                'data' => $wineriesRepository->getWineriesWithSelectByUser(['r.id, r.name ,r.denomination', 'r.location', 'r.description'], $users),
+                
+                'data' => $this-> wineriesRepository->getWineriesWithSelectByUser(['r.id, r.name ,r.denomination', 'r.location', 'r.description'], $users),
             ]
         );
     }
 
 
-    /* ENDPOINTS NUEVOS, CORREGIR CON MIGUEL, AL INTENTAR EJECUTARLOS EN THUNDER DAN ERROR 500 DE ALGO RELACIONADO CON YAML (NO HE PODIDO IDENTIFICAR EL ERROR): */
+    
 
-    /* Para editar una entrada en concreto de la tabla Ride. 
-    Lo cargará en la url `http://localhost/bouquet_server/api/wineries/edit/${id}` donde ${id} será el id de la bodega que queramos modificar: */
+    //Hasta aquí todos funcionando menos /read/user/{id}
+
+    
+
+
+     //ENDPOINTS NUEVOS, revisar y comprobar con thunder
+
+    //Para editar una entrada en concreto de la tabla Wineries. 
+    //Lo cargará en la url `http://localhost/bouquet_server/api/wineries/edit/${id}` donde ${id} será el id de la bodega que queramos modificar: */
 
     /**
      * @Route("/edit/{id}", name="edit-winerie", methods={"PUT"})
      */
-    public function edit(Request $request, $id, WineriesRepository $wineriesRepository): Response
+    public function editAction(Wineries $wineries,Request $request): Response
     {
-        $content = json_decode($request->getContent(), true);
+       
+        $data = json_decode($request->getContent(), true);
+        $this->wineriesRepository->editWinerie($data, $wineries);
+    
 
-        $wineries = $this->$wineriesRepository->find($id);
-
-        if (isset($content['active'])) {
-            $wineries->setTexto($content['active']);
-        }
-        if (isset($content['denomination'])) {
-            $wineries->setTexto($content['denomination']);
-        }
-        if (isset($content['name'])) {
-            $wineries->setTexto($content['name']);
-        }
-        if (isset($content['location'])) {
-            $wineries->setTexto($content['location']);
-        }
-        if (isset($content['address'])) {
-            $wineries->setTexto($content['address']);
-        }
-        if (isset($content['telephone'])) {
-            $wineries->setTexto($content['telephone']);
-        }
-        
-        if (isset($content['description'])) {
-            $wineries->setTexto($content['description']);
-        }
-        
-
-        /* insertar la imagen aqui como otro elemento o fuera? */
-
-
-        $this->em->flush();
 
         return new JsonResponse(['respuesta' => 'ok']);
     }
@@ -185,15 +176,16 @@ class WineriesController extends AbstractController
     Lo cargará en la url `http://localhost/bouquet_server/api/wineries/delete/${id}` donde ${id} será el id de la bodega que queramos eliminar: */
 
     /**
-     * @Route("/delete/{id}", name="delete-wineries", methods={"DELETE"})
+     * @Route("/delete/{wineries}", name="delete-wineries", methods={"DELETE"})
      */
-    public function delete($id): Response
+    public function deleteAction(Wineries $wineries): Response
     {
-        $wineries = $this->wineriesRepository->find($id);
-        $this->em->remove($wineries);
-        $this->em->flush();
+        $this->wineriesRepository->deleteWinerie($wineries);
 
-        return new JsonResponse(['respuesta' => 'ok']);
+        return new JsonResponse(
+            ['respuesta' => 'ok']
+        );
+       
     }
 
 
