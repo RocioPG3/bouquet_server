@@ -13,9 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 
-/**
- * @Route("/api/user")
- */
+
 
 
 class UserController extends AbstractController
@@ -61,12 +59,12 @@ class UserController extends AbstractController
     {
         $content = json_decode($request->getContent(), true);
 
-        $user = new User();
-        $user->setEmail($content['email']);
-        $user->setRoles($content['roles']);   /* ej en el json: {"roles": ["ROLE_ADMIN"]} ó {"roles": ["ROLE_USER"]} ó {"roles": ["ROLE_USER, ROLE_ADMIN"]} */
-        $user->setPassword($content['password']);
+        $users = new Users();
+        $users->setEmail($content['email']);
+        $users->setRoles($content['roles']);   /* ej en el json: {"roles": ["ROLE_ADMIN"]} ó {"roles": ["ROLE_USER"]} ó {"roles": ["ROLE_USER, ROLE_ADMIN"]} */
+        $users->setPassword($content['password']);
 
-        $em->persist($user);
+        $em->persist($users);
         $em->flush();
 
         return new JsonResponse([
@@ -117,7 +115,7 @@ class UserController extends AbstractController
      */
     public function borrar($id, UsersRepository $usersRepository, EntityManagerInterface $em)
     {
-        $user = $usersRepository->find($id);
+        $users = $usersRepository->find($id);
         $em->remove($user);
 
         $em->flush();

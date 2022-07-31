@@ -64,7 +64,7 @@ class WineriesRepository extends ServiceEntityRepository
          return $this->createQueryBuilder('r')
              ->select($select)
              ->andWhere('r.user = :user')
-             ->setParameter('user', $user)
+             ->setParameter('user', $users)
              ->getQuery()
              ->getResult();
      }
