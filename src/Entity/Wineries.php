@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\WineriesRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -63,10 +65,12 @@ class Wineries
     private $image;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Users::class, inversedBy="wineries")
+     * @ORM\ManyToOne(targetEntity=Users::class, inversedBy="wineries", cascade={"persist", "remove"}, fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
+
+
 
     public function getId(): ?int
     {
@@ -209,7 +213,7 @@ class Wineries
         ];
     }
 
-
+    
 
 
 

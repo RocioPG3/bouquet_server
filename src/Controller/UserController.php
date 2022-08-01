@@ -135,7 +135,7 @@ class UserController extends AbstractController
         return new JsonResponse(
             [
 
-        'data' => $this->usersRepository->getUsers(['u.id, u.email, u.active, u.roles ,u.password']),  /*aqui los campos que quiero del $select ésto es lo realmente importante, lo que uso */
+        'data' => $this->usersRepository->getUsers(['u.email, u.active']),  /*aqui los campos que quiero del $select ésto es lo realmente importante, lo que uso */
             ]
         );
         

@@ -133,13 +133,41 @@ class WineriesRepository extends ServiceEntityRepository
             return false;
         }
     }
-            /* REVISAR SI ESTÁ BIEN: */
+           //Esta función servirá para eliminar una bodega en concreto:
 
-    public function deleteWinerie(Wineries $wineries)
-    {
-         $this->em->remove($wineries);
-         $this->em->flush();
-        }       
+        public function deleteWinerie(Wineries $wineries): bool
+        {
+            try {
+            $this->em->remove($wineries);
+            $this->em->flush();
+            return true;
+        } catch (Throwable $exception) {
+            return false;
+        }
+    }
+        
+        /* Ésta función será para conectar ambas tablas para cargar el email de la tabla user en la tabla wineries: */
+
+        public function getWineriesWithUser(Wineries $wineries)
+        {
+        //ésto de abajo sería como hacer ésta consulta en phpmyadmin:  select * from wineries w where w.id = (id de la bodega p.ej 3)
+        return $this->createQueryBuilder('r')
+            ->select(["r", "u"])
+            ->andWhere('r.id = :id')
+            ->join("r.user", "u", "u.id = r.user_id")
+            ->setParameter('id', $wineries->getId())
+            ->getQuery()
+            ->getArrayResult();
+
+
+
+
+
+
+
+
+
+}       
     
     
  

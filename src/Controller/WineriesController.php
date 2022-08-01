@@ -64,7 +64,7 @@ class WineriesController extends AbstractController
     public function getRouteAction(Wineries $wineries): Response
      {   return new JsonResponse(
             [
-                'data' => $wineries->toArray(),         /* aqui llamo a la funcion toArrray que he creado yo en el modelo (entidad) Wineries */
+                'data' => $this->wineriesRepository->getWineriesWithUser($wineries)
             ]
         );
     }
@@ -81,13 +81,7 @@ class WineriesController extends AbstractController
         $data = json_decode($request->getContent(), true);
         $status = $this-> wineriesRepository->createWinerie($data, $users);   /* sera true o false según recibe del Wineriesrepository (si se crea o no la entrada) */
 
-        return new JsonResponse([
-
-            'status' => $status,
-            'message' => $status ? "Todo ha ido ok" : "Has metido datos que no corresponden"    /* Ésto es lo que envía al front como respuesta. Si los datos introducidos has sido correctos devolvera Todo ha ido ok, si no, dira Has metido datos que no corresponden */
-        
-        
-        ]);
+        return new JsonResponse(['status'=> true]);
     }
 
 
@@ -96,13 +90,13 @@ class WineriesController extends AbstractController
     cargará en la url `http://localhost/bouquet_server/public/index.php/api/wineries/read/select`: */
 
     /**
-     * @Route("/read/select", name="select", methods={"GET"})
+     * @Route("/read/booking/see/{id}", name="read-booking", methods={"GET"})
      */
-    public function selectAction(): Response
+    public function seeBookingAvailabilityAction(Wineries $wineries): Response
     {
         
         return new JsonResponse(
-            ['data' => $this-> wineriesRepository->getWineries(['r.name', 'r.id'])]
+            ['data' => $this-> wineriesRepository->getWineriesWithAvailability($wineries)]
         );
     }
 
@@ -179,11 +173,12 @@ class WineriesController extends AbstractController
      * @Route("/delete/{wineries}", name="delete-wineries", methods={"DELETE"})
      */
     public function deleteAction(Wineries $wineries): Response
+    
     {
-        $this->wineriesRepository->deleteWinerie($wineries);
-
+    
         return new JsonResponse(
-            ['respuesta' => 'ok']
+            ['status' => $this->wineriesRepository->deleteWinerie($wineries)]
+            
         );
        
     }
