@@ -65,7 +65,7 @@ class WineriesRepository extends ServiceEntityRepository
         
          //ésto de abajo sería como hacer ésta consulta en phpmyadmin:  select {selectParam} from ride r where r.user_id = {userid}
          
-         return $this->createQueryBuilder('r')
+         return $this->createQueryBuilder('r')->where('r.active = 1')
              ->select($select)
              ->andWhere('r.user = :user')
              ->setParameter('user', $users)
@@ -79,59 +79,51 @@ class WineriesRepository extends ServiceEntityRepository
        
          //ésto de abajo sería como hacer ésta consulta en phpmyadmin:  select {selectParam} from ride r
  
-         return $this->createQueryBuilder('r')
+         return $this->createQueryBuilder('r')->where('r.active =1')
              ->select($select)
              ->getQuery()
              ->getResult();
      }
  
      //Esta función es para editar una bodega en concreto:
-     public function editWinerie(array $data, Wineries $wineries): bool
+     public function editWinerie(array $data, Wineries $wineries, EntityManagerInterface $em): bool
     {
         try {
 
-            if (isset($data['active'])) {
-                $wineries->setActive($data['active']);
-            }
+            
 
-            if (isset($data['denomination'])) {
+            if (!empty($data['denomination'])) {
                 $wineries->setDenomination($data['denomination']);
             }
 
-            if (isset($data['name'])) {
+            if (!empty($data['name'])) {
                 $wineries->setName($data['name']);
             }
 
-            if (isset($data['location'])) {
+            if (!empty($data['location'])) {
                 $wineries->setLocation($data['location']);
             }
 
-            if (isset($data['address'])) {
+            if (!empty($data['address'])) {
                 $wineries->setAddress($data['address']);
             }
 
-            if (isset($data['telephone'])) {
+            if (!empty($data['telephone'])) {
                 $wineries->setTelephone($data['telephone']);
             }
 
 
-            if (isset($data['services'])) {
+            if (!empty($data['services'])) {
                 $wineries->setDuration($data['services']);
             }
 
-            if (isset($data['description'])) {
+            if (!empty($data['description'])) {
                 $wineries->setDescription($data['description']);
             }
 
 
-            /* if (isset($data['image'])) {
-                $wineries->setImage($data['image']);
-            } */
-
-
-
-            $this->getEntityManager()->persist($wineries);
-            $this->getEntityManager()->flush();
+            $em->persist($wineries);
+            $em->flush();
             return true;
         } catch (Throwable $exception) {
             return false;
@@ -139,11 +131,13 @@ class WineriesRepository extends ServiceEntityRepository
     }
            //Esta función servirá para eliminar una bodega en concreto:
 
-        public function deleteWinerie(Wineries $wineries): bool
+        public function deleteWinerie(int $id, WineriesRepository $wineriesrepository, EntityManagerInterface $em): bool
         {
             try {
-            $this->em->remove($wineries);
-            $this->em->flush();
+                $wineries = $wineriesRepository->find($id);
+                $wineries->setActive(false);
+                $em->persist($wineries);
+                $em->flush();
             return true;
         } catch (Throwable $exception) {
             return false;

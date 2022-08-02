@@ -14,6 +14,20 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+
+        api:
+          pattern: ^/api
+          stateless: true
+          jwt: ~
+
+        admin:
+          pattern: ^/admin
+          stateless: true
+          jwt: ~
+
+
+
+
         main:
             lazy: true
             provider: app_user_provider

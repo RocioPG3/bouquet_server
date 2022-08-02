@@ -36,7 +36,7 @@ class WineriesController extends AbstractController
 
     }
 
-    // Esta devuelve todas mis bodegas. Carga en la ruta: http://localhost/bouquet_server/public/index.php/api/wineries
+    // Esta devuelve todas mis bodegas. Carga en la ruta: http://localhost/bouquet_server/public/index.php/api/wineries/
 
     /**
      * @Route("/", name="wineries", methods={"GET"})
@@ -89,16 +89,16 @@ class WineriesController extends AbstractController
     seleccionar en el desplegable
     cargará en la url `http://localhost/bouquet_server/public/index.php/api/wineries/read/select`: */
 
-    /**
-     * @Route("/read/booking/see/{id}", name="read-booking", methods={"GET"})
-     */
-    public function seeBookingAvailabilityAction(Wineries $wineries): Response
-    {
+    // /**
+    //  * @Route("/read/booking/see/{id}", name="read-booking", methods={"GET"})
+    //  */
+    // public function seeBookingAvailabilityAction(Wineries $wineries): Response
+    // {
         
-        return new JsonResponse(
-            ['data' => $this-> wineriesRepository->getWineriesWithAvailability($wineries)]
-        );
-    }
+    //     return new JsonResponse(
+    //         ['data' => $this-> wineriesRepository->getWineriesWithAvailability($wineries)]
+    //     );
+    // }
 
 
 
@@ -155,16 +155,16 @@ class WineriesController extends AbstractController
     /**
      * @Route("/edit/{id}", name="edit-winerie", methods={"PUT"})
      */
-    public function editAction(Wineries $wineries,Request $request): Response
-    {
+    // public function editAction(Wineries $wineries,Request $request): Response
+    // {
        
-        $data = json_decode($request->getContent(), true);
-        $this->wineriesRepository->editWinerie($data, $wineries);
+    //     $data = json_decode($request->getContent(), true);
+    //     $this->wineriesRepository->editWinerie($data, $wineries);
     
 
 
-        return new JsonResponse(['respuesta' => 'ok']);
-    }
+    //     return new JsonResponse(['respuesta' => 'ok']);
+    // }
 
     /* Para eliminar una entrada en concreto de la tabla Ride. 
     Lo cargará en la url `http://localhost/bouquet_server/api/wineries/delete/${id}` donde ${id} será el id de la bodega que queramos eliminar: */
@@ -172,16 +172,16 @@ class WineriesController extends AbstractController
     /**
      * @Route("/delete/{wineries}", name="delete-wineries", methods={"DELETE"})
      */
-    public function deleteAction(Wineries $wineries): Response
+    // public function deleteAction(Wineries $wineries): Response
     
-    {
+    // {
     
-        return new JsonResponse(
-            ['status' => $this->wineriesRepository->deleteWinerie($wineries)]
+    //     return new JsonResponse(
+    //         ['status' => $this->wineriesRepository->deleteWinerie($wineries)]
             
-        );
+    //     );
        
-    }
+    // }
 
 
 }
