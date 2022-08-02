@@ -115,7 +115,7 @@ class WineriesController extends AbstractController
             [
     
 
-                'data' => $this-> wineriesRepository->getWineries(['r.id, r.name ,r.denomination', 'r.location'])  /* estos son los campos que quiero del $select ésto es lo realmente importante, lo que uso */
+                'data' => $this-> wineriesRepository->getWineries(['r.id, r.name ,r.denomination', 'r.location', 'r.image'])  /* estos son los campos que quiero del $select ésto es lo realmente importante, lo que uso */
 
             ]
         );

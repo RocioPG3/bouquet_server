@@ -43,6 +43,10 @@ class WineriesRepository extends ServiceEntityRepository
             $wineries->setDescription($data['description']);
             $wineries->setUser($users);
 
+            $imagen = (isset($data['imagen'])) ? $data['imagen'] : 'https://bodegasvirei.com/wp-content/uploads/2019/10/visitasguiadas.jpg';
+
+            $wineries->setImage($imagen);
+
             $this->getEntityManager()->persist($wineries);
             $this->getEntityManager()->flush();
             return true;

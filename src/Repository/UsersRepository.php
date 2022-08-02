@@ -39,6 +39,22 @@ class UsersRepository extends ServiceEntityRepository
         }
     }
 
+
+    //Esta función es para que devuelva un usuario:
+
+    public function findByEmailAndPass($email, $password): ?Users
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.email = :email')
+            ->setParameter('email', $email)
+            ->andWhere('u.password = :password')
+            ->setParameter('password', $password)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+
+
 //    /**
 //     * @return Users[] Returns an array of Users objects
 //     */
