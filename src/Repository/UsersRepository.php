@@ -55,7 +55,7 @@ class UsersRepository extends ServiceEntityRepository implements PasswordUpgrade
      public function createUser($data, $hasher)
      {
          try {
-             $user = new Users();
+             $users = new Users();
  
              $hashedPassword = $hasher->hashPassword($users, $data['password']);
  

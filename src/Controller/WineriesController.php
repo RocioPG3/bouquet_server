@@ -38,21 +38,21 @@ class WineriesController extends AbstractController
 
     // Esta devuelve todas mis bodegas. Carga en la ruta: http://localhost/bouquet_server/public/index.php/api/wineries/
 
-    /**
-     * @Route("/", name="wineries", methods={"GET"})
-     */
-    public function wineries(WineriesRepository $wineriesRepository): Response
-    {
+    // /**
+    //  * @Route("/", name="wineries", methods={"GET"})
+    //  */
+    // public function wineries(WineriesRepository $wineriesRepository): Response
+    // {
 
        
-        return new JsonResponse(
-            [
-                'data' => $wineriesRepository->getWineriesWithSelect(['r.id, r.name, r.denomination', 'r.location', 'r.description']),
-                            ]
-        );
+    //     return new JsonResponse(
+    //         [
+    //             'data' => $wineriesRepository->getWineriesWithSelect(['r.id, r.name, r.denomination', 'r.location', 'r.description']),
+    //                         ]
+    //     );
         
     
-    }
+    // }
 
      /* Éste endpoint lo uso en FichaPage y me devuelve toda la info ampliada de una ruta en particular 
     cargará en la url `http://localhost/bouquet_server/public/index.php/api/wineries/read/route/${id}` donde ${id} será el id de la bodega particular a consultar: */

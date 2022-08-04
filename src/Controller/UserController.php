@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
+// use App\Entity\User;
 use App\Entity\Users;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\UsersRepository;
@@ -52,6 +52,8 @@ class UserController extends AbstractController
 
 
     /* Aqui creamos una funcion para AÑADIR usuarios nuevos a mi bbdd, un metodo post en esta url http://localhost/bouquet_server/public/index.php/api/user */
+    
+    //NO LO ESTOY USANDO:
 
     /**
      * @Route("/api/user", methods={"POST"})
@@ -77,6 +79,8 @@ class UserController extends AbstractController
 
 
     /* Aqui creamos una funcion para EDITAR un usuario ya existente en mi bbdd (le paso el id del usuario por parametros en la ruta y los recibe como parametros en la funcion), un metodo put en esta url http://localhost/bouquet_server/public/index.php/api/users/{id} */
+    
+    //NO LO ESTOY USANDO:
 
     /**
      * @Route("/api/user/{id}", methods={"PUT"})
@@ -110,7 +114,9 @@ class UserController extends AbstractController
 
 
     /* Aqui creamos una funcion para BORRAR un usuario ya existente en mi bbdd (le paso el id del usuario por parametros en la ruta y los recibe como parametros en la funcion), un metodo put en esta url http://localhost/bouquet_server/public/index.php/api/user/{id} */
-
+    
+    //NO LO ESTOY USANDO:
+    
     /**
      * @Route("/api/user/{id}", methods={"DELETE"})
      */

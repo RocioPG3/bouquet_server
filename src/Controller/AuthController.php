@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 class AuthController extends AbstractController
 {
 
-    private $userRepository;
+    private $usersRepository;
 
     public function __construct(UsersRepository $usersRepository)
     {
@@ -31,6 +31,7 @@ class AuthController extends AbstractController
      */
     public function options(): Response
     {
+       
         return new Response("", 200, [
             'Access-Control-Allow-Origin' => '*',
             'Access-Control-Allow-Methods' => 'GET, POST, DELETE, PUT',

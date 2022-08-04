@@ -207,6 +207,7 @@ class Wineries
             'location' => $this->getLocation(),
             'address' => $this->getAddress(),
             'telephone' => $this->getTelephone(),
+            'services' => $this->getServices(),
             'description' => $this->getDescription(),
            
 

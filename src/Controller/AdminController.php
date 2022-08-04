@@ -61,7 +61,7 @@ class AdminController extends AbstractController
 
         return new JsonResponse(
             [
-                'data' => $this->wineriesRepository->getWineriesWithSelectByUser(['r.id', 'r.name' ,'r.denomination', 'r.location', 'r.image'], $security->getUser()),
+                'data' => $this->wineriesRepository->getWineriesWithSelectByUser(['r.id', 'r.name' ,'r.denomination', 'r.location', 'r.image'], $security->getUser())
             ]
         );
     }
@@ -70,7 +70,7 @@ class AdminController extends AbstractController
     //cargará en la url `http://localhost/bouquet_server/public/index.php/admin/wineries/read/route/${id}` donde ${id} será el id de la bodega en concreto que queremos consultar:
 
     /**
-     * @Route("/read/route/{wineries}", name="admin_show_detailed_winerie", methods={"GET"})
+     * @Route("/read/route/{id}", name="admin_show_detailed_winerie", methods={"GET"})
      */
     public function getRouteAction(Wineries $wineries): Response
     {
@@ -95,6 +95,8 @@ class AdminController extends AbstractController
             'message' => $status ? "Todo ha ido ok" : "Has metido datos que no corresponden"    //Ésto es lo que envía al front como respuesta. 
         ]);
     }
+
+
 // Este endpoint es para editar una entrada en concreto de la tabla Winerie. 
     //Lo cargará en la url `http://localhost/bouquet_server/public/index.php/admin/wineries/edit/${winerie}` donde ${winerie} será el id de la bodega que queramos modificar: 
 

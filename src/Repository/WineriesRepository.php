@@ -39,6 +39,7 @@ class WineriesRepository extends ServiceEntityRepository
             $wineries->setName($data['name']);
             $wineries->setLocation($data['location']);
             $wineries->setAddress($data['address']);
+            $wineries->setServices($data['services']);
             $wineries->setTelephone($data['telephone']);
             $wineries->setDescription($data['description']);
             $wineries->setUser($users);
@@ -63,7 +64,6 @@ class WineriesRepository extends ServiceEntityRepository
      {
  
         
-         //ésto de abajo sería como hacer ésta consulta en phpmyadmin:  select {selectParam} from ride r where r.user_id = {userid}
          
          return $this->createQueryBuilder('r')->where('r.active = 1')
              ->select($select)
@@ -156,13 +156,7 @@ class WineriesRepository extends ServiceEntityRepository
             ->setParameter('id', $wineries->getId())
             ->getQuery()
             ->getArrayResult();
-
-
-
-
-
-
-
+        }
 
 
 }       
@@ -199,4 +193,4 @@ class WineriesRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
-}
+
