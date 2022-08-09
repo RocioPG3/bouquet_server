@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Wineries;
 use App\Entity\Users;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,8 +29,39 @@ class WineriesRepository extends ServiceEntityRepository
         parent::__construct($registry, Wineries::class);
     }
 
+    //ésta función sería para devolver todas las bodegas pero filtradas por  lo que le indique en el select, por ejemplo getWineries(['r.name'])(ver ApiController el endpoint read/select por ejemplo que ahí lo uso)::
+    public function getWineries(array $select)
+    {
+      
+        //ésto de abajo sería como hacer ésta consulta en phpmyadmin:  select {selectParam} from ride r
 
-    public function createWinerie(array $data, Users $users)
+        return $this->createQueryBuilder('r')->where('r.active =1')
+            ->select($select)
+            ->getQuery()
+            ->getResult();
+    }
+
+    //ésta sería la opción para devolver todas las rutas que pertenezcan a un usuario mostrando solo las que le pertenecen a ese usuario:
+    public function getWineriesWithSelectByUser(array $select, User $user)
+    {
+
+       
+        
+        return $this->createQueryBuilder('r')->where('r.active = 1')
+            ->select($select)
+            ->andWhere('r.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
+
+   
+    
+    
+    //Ésta función es para añadir una ruta nueva un determinado usuario (el que haya iniciado sesión):
+
+
+    public function createWinerie(array $data, User $user)
     {
         try {
             $wineries = new Wineries();
@@ -39,14 +71,16 @@ class WineriesRepository extends ServiceEntityRepository
             $wineries->setName($data['name']);
             $wineries->setLocation($data['location']);
             $wineries->setAddress($data['address']);
-            $wineries->setServices($data['services']);
             $wineries->setTelephone($data['telephone']);
+            $wineries->setServices($data['services']);
             $wineries->setDescription($data['description']);
-            $wineries->setUser($users);
+            // $wineries->setUser($user);
 
             $imagen = (isset($data['imagen'])) ? $data['imagen'] : 'https://bodegasvirei.com/wp-content/uploads/2019/10/visitasguiadas.jpg';
 
             $wineries->setImage($imagen);
+
+            dump($wineries);
 
             $this->getEntityManager()->persist($wineries);
             $this->getEntityManager()->flush();
@@ -59,31 +93,8 @@ class WineriesRepository extends ServiceEntityRepository
     falla porque recibe un tipo de datos que no corresponde para ese campo)  */
 
 
-     //ésta sería la opción para devolver todas las rutas que pertenezcan a un usuario mostrando solo las que le pertenecen a ese usuario:
-     public function getWineriesWithSelectByUser(array $select, Users $users)
-     {
- 
-        
-         
-         return $this->createQueryBuilder('r')->where('r.active = 1')
-             ->select($select)
-             ->andWhere('r.user = :user')
-             ->setParameter('user', $users)
-             ->getQuery()
-             ->getResult();
-     }
- 
-     //ésta función sería para devolver todas las bodegas pero filtradas por  lo que le indique en el select, por ejemplo getWineries(['r.name'])(ver ApiController el endpoint read/select por ejemplo que ahí lo uso)::
-     public function getWineries(array $select)
-     {
-       
-         //ésto de abajo sería como hacer ésta consulta en phpmyadmin:  select {selectParam} from ride r
- 
-         return $this->createQueryBuilder('r')->where('r.active =1')
-             ->select($select)
-             ->getQuery()
-             ->getResult();
-     }
+     
+     
  
      //Esta función es para editar una bodega en concreto:
      public function editWinerie(array $data, Wineries $wineries, EntityManagerInterface $em): bool
@@ -131,7 +142,7 @@ class WineriesRepository extends ServiceEntityRepository
     }
            //Esta función servirá para eliminar una bodega en concreto:
 
-        public function deleteWinerie(int $id, WineriesRepository $wineriesrepository, EntityManagerInterface $em): bool
+        public function deleteWinerie(int $id, WineriesRepository $wineriesRepository, EntityManagerInterface $em): bool
         {
             try {
                 $wineries = $wineriesRepository->find($id);
@@ -139,25 +150,31 @@ class WineriesRepository extends ServiceEntityRepository
                 $em->persist($wineries);
                 $em->flush();
             return true;
-        } catch (Throwable $exception) {
+            } catch (Throwable $exception) {
             return false;
+            }
         }
-    }
-        
+  
         /* Ésta función será para conectar ambas tablas para cargar el email de la tabla user en la tabla wineries: */
 
+   
         public function getWineriesWithUser(Wineries $wineries)
         {
-        //ésto de abajo sería como hacer ésta consulta en phpmyadmin:  select * from wineries w where w.id = (id de la bodega p.ej 3)
-        return $this->createQueryBuilder('r')
+            //ésto de abajo sería como hacer ésta consulta en phpmyadmin:  select * from wineries r where r.id = (id de la bodega p.ej 3)
+         return $this->createQueryBuilder('r')
             ->select(["r", "u"])
             ->andWhere('r.id = :id')
             ->join("r.user", "u", "u.id = r.user_id")
             ->setParameter('id', $wineries->getId())
             ->getQuery()
             ->getArrayResult();
-        }
+    }
+    
 
+
+
+
+        
 
 }       
     

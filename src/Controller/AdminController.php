@@ -4,8 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Wineries;
 use App\Entity\Users;
+use App\Entity\User;
 use App\Repository\WineriesRepository;
 use App\Repository\UsersRepository;
+use App\Repository\UserRepository;
 use DateTime;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -103,7 +105,7 @@ class AdminController extends AbstractController
      /**
      * @Route("/edit/{id}", name="admin_edit-winerie", methods={"PUT"}, requirements={"id": "\d+"})
      */
-    public function editAction(int $id, Request $request, WineriesRepository $wineriesrepository, EntityManagerInterface $em): Response
+    public function editAction(int $id, Request $request, WineriesRepository $wineriesRepository, EntityManagerInterface $em): Response
     {
         $wineries = $wineriesRepository->find($id);
         $data = json_decode($request->getContent(), true);

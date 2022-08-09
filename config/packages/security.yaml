@@ -31,8 +31,6 @@ security:
           jwt: ~
 
 
-
-
         main:
             lazy: true
             provider: app_user_provider
