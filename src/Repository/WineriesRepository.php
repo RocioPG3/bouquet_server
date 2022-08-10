@@ -74,19 +74,19 @@ class WineriesRepository extends ServiceEntityRepository
             $wineries->setTelephone($data['telephone']);
             $wineries->setServices($data['services']);
             $wineries->setDescription($data['description']);
-            // $wineries->setUser($user);
+            $wineries->setUser($user);
 
             $imagen = (isset($data['imagen'])) ? $data['imagen'] : 'https://bodegasvirei.com/wp-content/uploads/2019/10/visitasguiadas.jpg';
 
             $wineries->setImage($imagen);
 
-            dump($wineries);
+           
 
             $this->getEntityManager()->persist($wineries);
             $this->getEntityManager()->flush();
-            return true;
+            return ['status' => true, 'message' => 'todo ha ido ok'];
         } catch (Throwable $exception) {
-            return false;
+            return ['status' => false, 'message' => $exception->getMessage()];
         }
     }
     /* try catch si se produce una excepción en el bloque del try, entraría dentro del catch si se especifica la excepción (en este caso, si la consulta
@@ -97,11 +97,9 @@ class WineriesRepository extends ServiceEntityRepository
      
  
      //Esta función es para editar una bodega en concreto:
-     public function editWinerie(array $data, Wineries $wineries, EntityManagerInterface $em): bool
+     public function editWinerie(array $data, Wineries $wineries): bool
     {
         try {
-
-            
 
             if (!empty($data['denomination'])) {
                 $wineries->setDenomination($data['denomination']);
@@ -133,8 +131,8 @@ class WineriesRepository extends ServiceEntityRepository
             }
 
 
-            $em->persist($wineries);
-            $em->flush();
+            $this->em->persist($wineries);
+            $this->em->flush();
             return true;
         } catch (Throwable $exception) {
             return false;
@@ -142,13 +140,12 @@ class WineriesRepository extends ServiceEntityRepository
     }
            //Esta función servirá para eliminar una bodega en concreto:
 
-        public function deleteWinerie(int $id, WineriesRepository $wineriesRepository, EntityManagerInterface $em): bool
+        public function deleteWinerie(Wineries $wineries): bool
         {
             try {
-                $wineries = $wineriesRepository->find($id);
-                $wineries->setActive(false);
-                $em->persist($wineries);
-                $em->flush();
+                $wineries->setActive(0);
+                $this->em->persist($wineries);
+                $this->em->flush();
             return true;
             } catch (Throwable $exception) {
             return false;
@@ -168,7 +165,17 @@ class WineriesRepository extends ServiceEntityRepository
             ->setParameter('id', $wineries->getId())
             ->getQuery()
             ->getArrayResult();
-    }
+        }
+
+        public function findById($id): ?Wineries
+        {
+            return $this->createQueryBuilder('w')
+                ->andWhere('w.id = :val')
+                ->setParameter('val', $id)
+                ->getQuery()
+                ->getOneOrNullResult()
+            ;
+        }
     
 
 
@@ -198,16 +205,6 @@ class WineriesRepository extends ServiceEntityRepository
 //            ->setMaxResults(10)
 //            ->getQuery()
 //            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Wineries
-//    {
-//        return $this->createQueryBuilder('w')
-//            ->andWhere('w.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
 //        ;
 //    }
 

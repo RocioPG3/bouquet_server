@@ -8,8 +8,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Repository\WineriesRepository;
 use App\Repository\UsersRepository;
+use App\Repository\UserRepository;
 use App\Entity\Wineries;
 use App\Entity\Users;
+use App\Entity\User;
 use DateTime;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -75,11 +77,11 @@ class WineriesController extends AbstractController
     /**
      * @Route("/create/{id}", name="create-winerie", methods={"POST"})
      */
-    public function createAction(Request $request, Users $users)
+    public function createAction(Request $request, User $user)
     {
        
         $data = json_decode($request->getContent(), true);
-        $status = $this-> wineriesRepository->createWinerie($data, $users);   /* sera true o false según recibe del Wineriesrepository (si se crea o no la entrada) */
+        $status = $this-> wineriesRepository->createWinerie($data, $user);   /* sera true o false según recibe del Wineriesrepository (si se crea o no la entrada) */
 
         return new JsonResponse(['status'=> true]);
     }

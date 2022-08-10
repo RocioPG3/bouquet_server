@@ -6,6 +6,7 @@ use App\Repository\WineriesRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\User;
 
 /**
  * @ORM\Entity(repositoryClass=WineriesRepository::class)
@@ -65,7 +66,7 @@ class Wineries
     private $image;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Users::class, inversedBy="wineries", cascade={"persist", "remove"}, fetch="EAGER")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="wineries", cascade={"persist", "remove"}, fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
@@ -186,12 +187,12 @@ class Wineries
         return $this;
     }
 
-    public function getUser(): ?Users
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setUser(?Users $user): self
+    public function setUser(?User $user): self
     {
         $this->user = $user;
 

@@ -93,8 +93,8 @@ class AdminController extends AbstractController
         $status = $this->wineriesRepository->createWinerie($data, $security->getUser());   //será true o false según recibe del Wineriesrepository (si se crea o no la entrada)
 
         return new JsonResponse([
-            'status' => $status,
-            'message' => $status ? "Todo ha ido ok" : "Has metido datos que no corresponden"    //Ésto es lo que envía al front como respuesta. 
+            'status' => $status['status'],
+            'message' =>  $status['message'] 
         ]);
     }
 
@@ -105,13 +105,13 @@ class AdminController extends AbstractController
      /**
      * @Route("/edit/{id}", name="admin_edit-winerie", methods={"PUT"}, requirements={"id": "\d+"})
      */
-    public function editAction(int $id, Request $request, WineriesRepository $wineriesRepository, EntityManagerInterface $em): Response
+    public function editAction(int $id, Request $request, WineriesRepository $wineriesRepository): Response
     {
-        $wineries = $wineriesRepository->find($id);
+        $wineries = $wineriesRepository->findById($id);
         $data = json_decode($request->getContent(), true);
-        $this->wineriesRepository->editWinerie($data, $wineries, $em);
+        $this->wineriesRepository->editWinerie($data, $wineries);
 
-        return new JsonResponse([Response::HTTP_ACCEPTED]);
+        return new JsonResponse(Response::HTTP_ACCEPTED);
     }   
 
 //Este endpoint es para eliminar una entrada en concreto de la tabla Winerie. 
@@ -120,9 +120,11 @@ class AdminController extends AbstractController
     /**
      * @Route("/delete/{id}", name="admin_delete-winerie", methods={"PUT"},requirements={"id": "\d+"} )
      */
-    public function deleteAction(int $id, WineriesRepository $wineriesRepository, EntityManagerInterface $em): Response
+    public function deleteAction(int $id, WineriesRepository $wineriesRepository): Response
     {
-        $wineriesRepository->deleteWinerie($id, $wineriesRepository, $em);
+        $wineries = $wineriesRepository->findById($id);
+
+        $wineriesRepository->deleteWinerie($wineries);
 
         return new JsonResponse(Response::HTTP_ACCEPTED);
     }
