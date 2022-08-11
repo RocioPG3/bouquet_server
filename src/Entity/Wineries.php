@@ -65,8 +65,8 @@ class Wineries
      */
     private $image;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="wineries", cascade={"persist", "remove"}, fetch="EAGER")
+     /**
+     * @ORM\ManyToOne(targetEntity=user::class , cascade={"persist", "remove"}, fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
